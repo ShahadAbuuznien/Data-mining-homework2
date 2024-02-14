@@ -1,0 +1,73 @@
+---
+title: "Homework_2"
+author: "Shahad Abuuznien"
+date: "2024-02-12"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r mtcars}
+#Question 2
+
+manhattan_distance <- function(vector1, vector2) {
+  if(length(vector1) != length(vector2)) {
+    stop("Vectors must be of the same length")
+  }
+  sum(abs(vector1 - vector2))
+}
+
+# Function to calculate Euclidean Distance
+euclidean_distance <- function(vector1, vector2) {
+  if(length(vector1) != length(vector2)) {
+    stop("Vectors must be of the same length")
+  }
+  sqrt(sum((vector1 - vector2)^2))
+}
+
+# Test vectors
+vector1 <- c(1, 2, 3, 4)
+vector2 <- c(4, 3, 2, 1)
+
+# Compute distances
+manhattan_dist <- manhattan_distance(vector1, vector2)
+euclidean_dist <- euclidean_distance(vector1, vector2)
+
+# Print results
+cat("Manhattan Distance between the two vectors:", manhattan_dist, "\n")
+cat("Euclidean Distance between the two vectors:", euclidean_dist, "\n")
+
+#Question 4
+getwd()
+
+library(ggplot2)
+library(dplyr)
+library(datasets)
+cor(mtcars$mpg, mtcars$wt)
+ggplot(data=mtcars, aes(x=mpg, y=wt)) +geom_point() + geom_smooth()
+
+
+#Question 5
+
+
+#First step is to create a new data frame (clean_metabolite) that only has the
+setwd("/Users/shahadabuuznien/Desktop/Data Mining /Homework 2")
+metabolite <- read.csv("~/Desktop/Data Mining /Homework 2/metabolite.csv")
+clean_metabolite<- metabolite[ , colSums(is.na(metabolite))/nrow(metabolite)<=0.75]
+#second substituting  the null values int the remaining columns with the meadian of each column and call the new data set sub_Med_Met
+library(dplyr)
+sub_Med_Met <- clean_metabolite %>%
+  mutate(across(where(is.numeric), ~ifelse(is.na(.), median(., na.rm = TRUE), .)))
+
+#Question 6
+library(ggplot2)
+data <- sub_Med_Met[ , 2:188]
+data_pca <- prcomp(data)
+data_map <- as.data.frame(data_pca$x)
+head(data_map)
+ggplot(data_map , aes(x=PC1, y=PC2)) + geom_point(aes(color=sub_Med_Met$Label))
+barplot(data_pca$sdev)
+```
+
